@@ -1,6 +1,5 @@
 const mailer = require('nodemailer')
 const {Email_Id,Email_Pass} = require('./serverConfig')
-console.log(Email_Id,Email_Pass)
 let transporter = mailer.createTransport({
     // host: "smtp.ethereal.email",
     // port: 587,
