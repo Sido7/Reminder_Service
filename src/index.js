@@ -2,10 +2,13 @@ const express = require('express')
 const bodyParser  = require('body-parser')
 const setup = require('./util/cron-schedule')
 
-const {Port} = require('./config/serverConfig')
+const {Port,Binding_Key} = require('./config/serverConfig')
 const {sendEmail} = require('./service/ticket-service')
+const service = require('./service/ticket-service')
+const {createChannel,publishMessages,subscribeMessages} = require('./util/messageQueue')
 
 const apiRoutes = require('./routes/index')
+
 
 async function createServer(){
     const app = express()
@@ -13,6 +16,8 @@ async function createServer(){
     app.use(bodyParser.urlencoded({extended:true}))
 
     app.use('/api',apiRoutes)
+    const channel = await createChannel()
+    subscribeMessages(channel,service.subscribeEvent,Binding_Key)
 
     app.listen(Port,()=>{
         console.log("listening to Port ",Port)

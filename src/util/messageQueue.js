@@ -1,7 +1,7 @@
 const amqp  = require('amqplib')
 const {Exchange_Name,Message_Broker_Url,Binding_Key} = require('../config/serverConfig')
 
-async function createChanne(){
+async function createChannel(){
     try{
         const connection  = await amqp.connect(Message_Broker_Url)
         const channel = await connection.createChannel()
@@ -20,6 +20,8 @@ async function subscribeMessages(channel,service,binding_key){
     await channel.consume(applicationQueue.queue,(msg)=>{
         console.log("recieved message")
         console.log(msg.content.toString())
+        const payload = JSON.parse(msg.content.toString())
+        service(payload)
         channel.ack(msg)
     })
     }catch(error){
@@ -38,7 +40,7 @@ async function publishMessages(channel,binding_key,message){
 }
 
 module.exports = {
-    createChanne,
+    createChannel,
     subscribeMessages,
     publishMessages
 }

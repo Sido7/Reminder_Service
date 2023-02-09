@@ -68,10 +68,27 @@ async function updateTicket(ticketId,data){
     }
 }
 
+async function subscribeEvent(payload){
+    let service = payload.service
+    let data = payload.data
+    switch(service){
+        case 'Create_Ticket':
+            await createTicket(data);
+            break;
+        case 'Send_Email':
+            await sendEmail(data);
+            break;
+        default:
+            console.log("no valid event recieved");
+            break;
+    }
+}
+
 module.exports = {
     sendEmail,
     getAllPendingTickets,
     createTicket,
     getTicket,
-    updateTicket
+    updateTicket,
+    subscribeEvent
 }
